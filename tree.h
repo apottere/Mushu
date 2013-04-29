@@ -5,6 +5,7 @@ typedef struct tree_s {
 	int type;
 	union {
 		int ival;	/* NUM */
+		char* name;
 	} attribute;
 	struct tree_s *left, *right;
 }

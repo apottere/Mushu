@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
-#include "token.h"
 #include "tree.h"
+#include "y.tab.h"
 
 
 tree_t *make_tree( int type, tree_t *left, tree_t *right )
@@ -27,13 +27,20 @@ void print_tree( tree_t *t, int spaces )
 		fprintf( stderr, " " );
 
 	switch (t->type) {
-	case '+':
-	case '-':
-	case '*':
-		fprintf( stderr, "[OP:%c]", t->type );
+	case PLUS:
+		fprintf( stderr, "[OP:%c]", '+');
+		break;
+	case MINUS:
+		fprintf( stderr, "[OP:%c]", '-');
+		break;
+	case STAR:
+		fprintf( stderr, "[OP:%c]", '*');
 		break;
 	case NUM:
 		fprintf( stderr, "[NUM:%d]", t->attribute.ival );
+		break;
+	case IDENT:
+		fprintf( stderr, "[IDENT:%s]", t->attribute.name );
 		break;
 	default:
 		fprintf( stderr, "[UNKNOWN]" );
@@ -44,3 +51,35 @@ void print_tree( tree_t *t, int spaces )
 	print_tree( t->right, spaces+4 );
 }
 
+int eval_tree(tree_t *t)
+{
+
+	if ( t == NULL ) {
+//		if(t->left == NULL || t->right == NULL) {
+			fprintf(stderr, "Incomplete tree found!\n");
+			exit(1);
+//		}
+	}
+
+	switch (t->type) {
+	case PLUS:
+		return eval_tree(t->left) + eval_tree(t->right);
+		break;
+	case MINUS:
+		return eval_tree(t->left) - eval_tree(t->right);
+		break;
+	case STAR:
+		return eval_tree(t->left) * eval_tree(t->right);
+		break;
+	case NUM:
+		return t->attribute.ival;
+		break;
+	case IDENT:
+		fprintf(stderr, "Identifiers can't be evaluated!\n");
+		exit(1);
+		break;
+	default:
+		fprintf(stderr, "Unknown type found!\n");
+		exit(1);
+	}
+}
