@@ -1,4 +1,4 @@
-little-dragon
+Dragonling
 =============
 
 A little itsy bitsy dragon.
